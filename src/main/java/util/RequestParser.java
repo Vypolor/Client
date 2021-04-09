@@ -1,6 +1,6 @@
 package util;
 
-import TransportObjects.Request;
+import transport.Request;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,7 +9,7 @@ public class RequestParser {
 
     public static Request parseCommand(String requestStr) {
         Request request = new Request();
-        String[] args = new String[4];
+        String[] args = new String[5];
 
         Pattern cmdNamePattern = Pattern.compile("(/[a-z]+)");
         Matcher cmdNameMatcher = cmdNamePattern.matcher(requestStr);
@@ -17,7 +17,7 @@ public class RequestParser {
         Pattern keyPattern = Pattern.compile("(-[a-z]+)");
         Matcher keyMatcher = keyPattern.matcher(requestStr);
 
-        Pattern argsPattern = Pattern.compile("\"([a-zA-Zа-яА-ЯёЁ0-9/:*.:?\\s]+)\"");
+        Pattern argsPattern = Pattern.compile("\"([a-zA-Zа-яА-ЯёЁ0-9/:*.\'!$№|%\\]^\\-#:\\[?)(&@+=_\\s]+)\"");
         Matcher argsMatcher = argsPattern.matcher(requestStr);
 
         if (cmdNameMatcher.find())
@@ -43,9 +43,9 @@ public class RequestParser {
         //length pattern hh:mm:ss
         String[] splitted = length.split(":");
 
-        return Long.parseLong(splitted[0]) * 3600000
-                + Long.parseLong(splitted[1]) * 60000
-                + Long.parseLong(splitted[2]) * 1000;
+        return Long.parseLong(splitted[0]) * 3600
+                + Long.parseLong(splitted[1]) * 60
+                + Long.parseLong(splitted[2]);
     }
 
 }

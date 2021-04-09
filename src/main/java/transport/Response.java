@@ -1,18 +1,10 @@
-package TransportObjects;
+package transport;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Response implements Serializable {
-    private static Response instance;
-
-    public static Response getInstance(){
-        if(instance == null){
-            instance = new Response();
-        }
-        return instance;
-    }
 
     private int code;
     private Set<String> args = new HashSet<>();
