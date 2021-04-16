@@ -1,5 +1,6 @@
 package model;
 
+import org.apache.commons.lang3.StringUtils;
 import transport.*;
 import util.RequestParser;
 import view.OutputHandler;
@@ -32,17 +33,22 @@ public class Client extends Thread{
                 String userCommand = getUserCommand();
                 if(checkCommandValidity(userCommand)){
                     Request request = RequestParser.parseCommand(userCommand);
-                    oos.writeObject(request);
-                    oos.flush();
+                    if(checkArgsValidity(request.getArgs()))
+                    {
+                        oos.writeObject(request);
+                        oos.flush();
 
-                    Response response = (Response) ois.readObject();
-                    OutputHandler outputHandler = new OutputHandler(response);
-                    outputHandler.showInformation();
-                    code = response.getCode();
+                        Response response = (Response) ois.readObject();
+                        OutputHandler outputHandler = new OutputHandler(response);
+                        outputHandler.showInformation();
+                        code = response.getCode();
+                    }
+                    else {
+                        System.out.println("WARNING: ONE OF THE ARGUMENTS CONSISTS ONLY OF SPACES");
+                    }
                 }
                 else{
                     System.out.println("WARNING: EMPTY COMMAND");
-                    continue;
                 }
             }while (code!= 700);
 
@@ -56,7 +62,6 @@ public class Client extends Thread{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
     }
 
     private String getUserCommand(){
@@ -67,9 +72,22 @@ public class Client extends Thread{
     }
 
     private boolean checkCommandValidity(String command){
-        if(command.equals("") || command.equals(null))
+        if(command.equals(""))
             return false;
         else
             return true;
+    }
+
+    private boolean checkArgsValidity(String[] args){
+        int argLength = 0;
+
+        for(String arg : args){
+            if(arg != null){
+                if(StringUtils.isWhitespace(arg)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
